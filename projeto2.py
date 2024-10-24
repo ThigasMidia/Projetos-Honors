@@ -1,15 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-def f(x):
-    return np.arctan(x)
-
-def df(x):
-    return 1/(x**2 + 1)
-
-def ef(x, y):
-    return np.cos(x**2)
-
 def fd_error(f,df,x0,h0,hn,n):
     h = np.logspace(np.log10(h0),np.log10(hn),n+1)
     aprox = (f(x0+h) - f(x0))/ h
@@ -34,4 +25,3 @@ def ode_solver(f,x0,y0,xn,n,plot):
     
     return x, y
 
-fd_error(f,df,1,1e-15,1e-1,100)
