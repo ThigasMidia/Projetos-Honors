@@ -3,9 +3,7 @@ import numpy as np
 
 def fd_error(f,df,x0,h0,hn,n):
     h = np.logspace(np.log10(h0),np.log10(hn),n+1)
-    aprox = (f(x0+h) - f(x0))/ h
-    e = abs(df(x0) - aprox)
-    aproxima = (f(x0+0.1) - f(x0)) * 10
+    e = abs(df(x0) -  (f(x0+h) - f(x0))/ h)
 
     plt.loglog(h, e)
     plt.gca().invert_xaxis()
@@ -24,4 +22,5 @@ def ode_solver(f,x0,y0,xn,n,plot):
         plt.show()
     
     return x, y
+
 
