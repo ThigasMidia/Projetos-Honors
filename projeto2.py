@@ -22,5 +22,3 @@ def ode_solver(f,x0,y0,xn,n,plot):
         plt.show()
     
     return x, y
-
-
