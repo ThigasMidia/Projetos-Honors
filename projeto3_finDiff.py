@@ -17,7 +17,7 @@ def fin_diff(f,x,degree,h,n):
         for i in range(1, n):
             dpx = dpx - iden
             dmx = dmx + iden
-            iden[i-1] -= h
+            iden[i-1] = 0
             iden[i] = h
             dpx = dpx + iden
             dmx = dmx - iden
