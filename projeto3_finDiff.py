@@ -32,8 +32,6 @@ def fin_diff(f,x,degree,h,n):
             id2 = np.copy(iden)
             for j in range(i, n):
                 if(i == j):
-                    print(f(dpx), f(dmx))
-                    print((f(dpx) + f(dmx) - 2)/10**2)
                     grad[i,j] = (f(dpx) - 2*f(x) + f(dmx))/h**2
                 else:
                     id2[j-1] = 0
