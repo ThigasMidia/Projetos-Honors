@@ -1,12 +1,15 @@
 import numpy as np
 
-def fin_diff(f,x,degree,h,n):
+def f(x):
+    return x[0]**2 + x[1]**2
+
+def fin_diff(f,x,degree,h):
 
     #iden = "vetor identidade" que sempre muda o 'h' de posicao, sendo h em iden[0] na
     #       primeira iteração, h em iden[1] na segunda e por assim vai
-    iden = np.zeros(n)
-    iden[0] = h
-    
+    n = np.size(x);
+    iden = np.zeros(n);
+    iden[0] = h;
     #dmx = delta-minus x (x - hEj)
     #dpx = delta-plus x (x + hEj)
     if (degree == 1):
@@ -45,3 +48,7 @@ def fin_diff(f,x,degree,h,n):
                 iden[i+1] = h
 
     return grad
+
+x = np.array([1,3]);
+y = fin_diff(f,x,2,1e-2);
+print(y);
