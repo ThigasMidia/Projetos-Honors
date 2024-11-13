@@ -1,7 +1,7 @@
 import numpy as np
 
 def f(x):
-    return x[0]**2 + x[1]**2
+    return np.sin(x[0]*x[1])*np.cos(x[1]**2)
 
 def fin_diff(f,x,degree,h):
 
@@ -49,6 +49,7 @@ def fin_diff(f,x,degree,h):
 
     return grad
 
-x = np.array([1,3]);
-y = fin_diff(f,x,2,1e-2);
-print(y);
+g = fin_diff(f,np.array([-1,2]),1,1e-5)
+print(g)
+H = fin_diff(f,np.array([-1,2]),2,1e-5)
+print(H)
