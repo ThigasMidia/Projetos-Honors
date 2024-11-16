@@ -10,13 +10,8 @@ def grad(x):
 def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot = False,search = False):
     x = x0
     k = 0
-    absci = np.linspace(5,-5,1000)
-    orden = np.linspace(5,-5,1000)
-    X,Y = np.meshgrid(absci,orden)
-    fi = f(X)*f(Y)
-    plt.contour(X,Y,fi)
-    plt.show()
-    while (np.linalg.norm(grad(x))) and (k < itmax):
+    a = x - (alpha * grad(x))
+    while (np.linalg.norm(grad(x)) > eps) and (k < itmax):
         k += 1
         x = x - (alpha * grad(x))
     

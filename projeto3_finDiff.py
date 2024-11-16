@@ -10,13 +10,14 @@ def fin_diff(f,x,degree,h):
     n = np.size(x);
     iden = np.zeros(n);
     iden[0] = h;
+
     #dmx = delta-minus x (x - hEj)
     #dpx = delta-plus x (x + hEj)
     if (degree == 1):
         grad = np.zeros(n)
         dmx = x - iden
         dpx = x + iden
-        grad[0] = (f(dpx) - f(dmx))/2*h
+        grad[0] = (f(dpx) - f(dmx))/(2*h)
         for i in range(1, n):
             dpx = dpx - iden
             dmx = dmx + iden
@@ -24,13 +25,14 @@ def fin_diff(f,x,degree,h):
             iden[i] = h
             dpx = dpx + iden
             dmx = dmx - iden
-            grad[i] = (f(dpx) - f(dmx))/2*h
+            grad[i] = (f(dpx) - f(dmx))/(2*h)
 
     else:
         grad = np.zeros((n,n))
         for i in range(0,n):
             dmx = x - iden
             dpx = x + iden
+
             #id2 = identidade iterada no caso de derivada mista (enquanto iden é de hEj, id2 é de hEi) 
             id2 = np.copy(iden)
             for j in range(i, n):
@@ -39,7 +41,7 @@ def fin_diff(f,x,degree,h):
                 else:
                     id2[j-1] = 0
                     id2[j] = h
-                    grad[i,j] = (f(dpx+id2)-f(dpx-id2)-f(dmx+id2)+f(dmx-id2))/4*h**2
+                    grad[i,j] = (f(dpx+id2)-f(dpx-id2)-f(dmx+id2)+f(dmx-id2))/(4*h**2)
                     grad[j,i] = grad[i,j]
             dmx = dmx + iden
             dpx = dpx - iden
