@@ -76,7 +76,7 @@ def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot =
         x = x - (alpha * grad(x))
 
     if(plot):
-        img = [np.linspace(-1.5,0.5,1000), np.linspace(-0.7,0.5,1000)]
+        img = [np.linspace(-1.4,0.5,1000), np.linspace(-0.6,0.5,1000)]
         X, Y = np.meshgrid(img[0],img[1])
         F =  f([X,Y])
         plt.contour(X,Y,F)   
@@ -84,6 +84,6 @@ def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot =
 
     return x, k
 
-x,k = gd(f,np.array([10,10]),grad,alpha = 1e-3,search = True,itmax = 100000, eps = 1e-8)
+x,k = gd(f,np.array([0,0]),grad,plot=True)
 print(x)
 print(k)
