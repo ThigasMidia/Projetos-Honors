@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
+from functools import partial
 
 def fin_diff(f,x,degree,h):
 
@@ -68,22 +69,40 @@ def negGrad(x):
 
 def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot = False,search = False):
     x = x0
+    abci = np.array([x[0]])
+    orde = np.array([x[1]])
     k = 0
-    while (np.linalg.norm(grad(x)) > eps) and (k < itmax):
-        k += 1
-        if(search):
-            alpha = linesearch(f,x,grad,negGrad)
-        x = x - (alpha * grad(x))
+
+
+    if(fd): 
+        while (np.linalg.norm(fin_diff(f,x,1,1e-5)) > eps) and (k < itmax):
+            k += 1
+            if(search):
+                alpha = linesearch(f,x,grad,negGrad)
+            x = x - (alpha * fin_diff(f,x,1,1e-5))
+            abci = np.append(abci,[x[0]],axis=0)
+            orde = np.append(orde,[x[1]],axis=0)
+
+    else:
+        while (np.linalg.norm(grad(x)) > eps) and (k < itmax):
+            k += 1
+            if(search):
+                alpha = linesearch(f,x,grad,negGrad)
+            x = x - (alpha * grad(x))
+            abci = np.append(abci,[x[0]],axis=0)
+            orde = np.append(orde,[x[1]],axis=0)
+
 
     if(plot):
-        img = [np.linspace(-1.4,0.5,1000), np.linspace(-0.6,0.5,1000)]
+        img = [np.linspace(abci[k]-0.1,abci[0]+0.1,1000), np.linspace(orde[k]-0.1,orde[0]+0.1,1000)]
         X, Y = np.meshgrid(img[0],img[1])
         F =  f([X,Y])
-        plt.contour(X,Y,F)   
+        plt.contour(X,Y,F,20)
+        plt.plot(abci,orde,'black')
         plt.show()
 
     return x, k
 
-x,k = gd(f,np.array([0,0]),grad,plot=True)
+x,k = gd(f,np.array([3,3]),grad,alpha = 1e-2,eps = 1e-8,fd=True,plot=True)
 print(x)
 print(k)
