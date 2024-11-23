@@ -1,16 +1,16 @@
 def trapezio(f,a,b,n):
-    h = (int(a) + int(b))/int(n)
+    h = (a + b)/n
     valor = 0
-    for i in range(1, int(n)):
-        valor += f(float(a)+(float(i)*float(h)))
-    valor = (((float(valor)*2)+f(float(a))+f(float(b)))*float(h))/2
+    for i in range(1, n):
+        valor += f(a+i*h)
+    valor = (((valor*2)+f(a)+f(b))*h)/2
     return valor
 
 def simpson(f,a,b,n):
-    h = (int(a) + int(b))/int(n)
+    h = (a + b)/n
     soma = 0
-    x = int(a)
-    for i in range(int(n)-1):
+    x = a
+    for i in range(n-1):
         x += h
         valor = f(x)
         if i%2==0:

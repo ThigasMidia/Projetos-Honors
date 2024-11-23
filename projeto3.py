@@ -97,12 +97,33 @@ def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot =
         img = [np.linspace(abci[k]-0.1,abci[0]+0.1,1000), np.linspace(orde[k]-0.1,orde[0]+0.1,1000)]
         X, Y = np.meshgrid(img[0],img[1])
         F =  f([X,Y])
-        plt.contour(X,Y,F,20)
-        plt.plot(abci,orde,'black')
+        plt.contour(X,Y,F,30)
+        plt.plot(abci,orde,'black') 
+        plt.plot(abci,orde,'o')
         plt.show()
 
     return x, k
 
-x,k = gd(f,np.array([3,3]),grad,alpha = 1e-2,eps = 1e-8,fd=True,plot=True)
+def newton(f,x0,grad,hess,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot = False,search = False):
+    x = x0
+    k = 0
+    if(fd):
+        g = fin_diff(f,x,1,1e-5)
+    else:
+        g = grad(x)
+
+    while (np.linalg.norm(g) > eps) and(k < itmax):
+        k += 1
+        if(fd):
+            H = fin_diff(f,x,2,1e-5)
+        else:
+            H = hess(x)
+        if(np.linalg.det(H) == 0):
+            H = H*0.9 + np.identity(np.size(H,0))*0.1
+        
+        
+
+
+x,k = gd(f,np.array([5,5]),grad,alpha=1e-2,eps = 1e-6,plot=True)
 print(x)
 print(k)
