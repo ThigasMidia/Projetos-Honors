@@ -149,8 +149,8 @@ def newton(f,x0,grad,hess,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e
         X, Y = np.meshgrid(img[0],img[1])
         F =  f([X,Y])
         plt.contour(X,Y,F,50)
-        plt.plot(abci,orde,'black') 
-        plt.plot(abci,orde,'o')
+        plt.plot(abci,orde,'blue') 
+        plt.plot(abci,orde,'bo')
         plt.show()       
 
     return x, k
