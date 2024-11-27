@@ -160,6 +160,14 @@ def bfgs(f,x0,grad,eps = 1e-5,alpha = 0.1, itmax = 10000, fd = False,h = 1e-7,pl
     k = 0
     g = grad(x)
     H = np.identity(np.size(x))
+    while (np.linalg.norm(g) > eps) and (k < itmax):
+        k += 1
+        y = g
+        s = x
+        d = np.linalg.solve(H, -g)
+        while (np.dot(d,g) > np.linalg.norm(g)*np.linalg.norm(d)*-0.001):
+            H = 0.9*H + 0.1*np.identity(np.size(x))
+            d = np.linalg.solve(H,-g)
     
 
     return x, k
