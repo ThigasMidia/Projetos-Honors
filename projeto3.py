@@ -53,7 +53,7 @@ def fin_diff(f,x,degree,h):
 
 def linesearch(f,x,g,d):
     alpha = 1
-    while(f(x+alpha*d(x)) > f(x) + 0.001*alpha*np.dot(g(x),d(x))):
+    while(f(x+alpha*d) > f(x) + 0.001*alpha*np.dot(g,d)):
         alpha = alpha*0.5
 
     return alpha
@@ -91,19 +91,23 @@ def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot =
         while (np.linalg.norm(grad(x)) > eps) and (k < itmax):
             k += 1
             if(search):
-                alpha = linesearch(f,x,grad,negGrad)
+                alpha = linesearch(f,x,grad(x),negGrad(x))
             x = x - (alpha * grad(x))
             abci = np.append(abci,[x[0]],axis=0)
             orde = np.append(orde,[x[1]],axis=0)
 
 
     if(plot):
-        img = [np.linspace(abci[k]-0.5,abci[0]+0.1,1000), np.linspace(orde[k]-0.5,orde[0]+0.1,1000)]
+        yMin = np.min(orde)
+        yMax = np.max(orde)
+        xMin = np.min(abci)
+        xMax = np.max(abci)
+        img = [np.linspace(xMin-0.2*(xMax-xMin),xMax+0.2*(xMax - xMin),1000), np.linspace(yMin-0.2*(yMax-yMin),yMax+0.2*(yMax-yMin),1000)]
         X, Y = np.meshgrid(img[0],img[1])
         F =  f([X,Y])
         plt.contour(X,Y,F,50)
-        plt.plot(abci,orde,'black') 
-        plt.plot(abci,orde,'o')
+        plt.plot(abci,orde,'blue') 
+        plt.plot(abci,orde,'bo')
         plt.show()
 
     return x, k
@@ -145,7 +149,11 @@ def newton(f,x0,grad,hess,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e
             g = grad(x)
  
     if(plot):
-        img = [np.linspace(abci[k]-0.5,abci[0]+0.1,1000), np.linspace(orde[k]-0.5,orde[0]+0.1,1000)]
+        yMin = np.min(orde)
+        yMax = np.max(orde)
+        xMin = np.min(abci)
+        xMax = np.max(abci)
+        img = [np.linspace(xMin-0.2*(xMax-xMin),xMax+0.2*(xMax - xMin),1000), np.linspace(yMin-0.2*(yMax-yMin),yMax+0.2*(yMax-yMin),1000)]
         X, Y = np.meshgrid(img[0],img[1])
         F =  f([X,Y])
         plt.contour(X,Y,F,50)
@@ -160,18 +168,44 @@ def bfgs(f,x0,grad,eps = 1e-5,alpha = 0.1, itmax = 10000, fd = False,h = 1e-7,pl
     k = 0
     g = grad(x)
     H = np.identity(np.size(x))
+    abci = np.array([x[0]])
+    orde = np.array([x[1]])
     while (np.linalg.norm(g) > eps) and (k < itmax):
         k += 1
         y = g
         s = x
-        d = np.linalg.solve(H, -g)
+        d = -np.matmul(H,g)
         while (np.dot(d,g) > np.linalg.norm(g)*np.linalg.norm(d)*-0.001):
             H = 0.9*H + 0.1*np.identity(np.size(x))
-            d = np.linalg.solve(H,-g)
-    
+            d = -np.matmul(H,g)
+        if(search):
+            alpha = linesearch(f,x,g,d)
+        x = x + alpha*d
+        abci = np.append(abci,[x[0]],axis=0)
+        orde = np.append(orde,[x[1]],axis=0)
+        g = grad(x)
+        y = g - y
+        s = x - s
+        #SALVAGUARDA DE DIVISAO POR 0
+        if(np.dot(s,y) == 0):
+            H = np.identity(np.size(x))
+        H = H + (np.outer(s,s)*(np.dot(s,y)+np.dot(y,np.matmul(H,y))))/np.dot(s,y)**2 - (np.matmul(H,np.outer(y,s)) + np.matmul(np.outer(s,y),H))/np.dot(s,y)
+
+    if(plot): 
+        yMin = np.min(orde)
+        yMax = np.max(orde)
+        xMin = np.min(abci)
+        xMax = np.max(abci)
+        img = [np.linspace(xMin-0.2*(xMax-xMin),xMax+0.2*(xMax - xMin),1000), np.linspace(yMin-0.2*(yMax-yMin),yMax+0.2*(yMax-yMin),1000)]
+        X, Y = np.meshgrid(img[0],img[1])
+        F =  f([X,Y])
+        plt.contour(X,Y,F,50)
+        plt.plot(abci,orde,'blue') 
+        plt.plot(abci,orde,'bo')
+        plt.show()     
 
     return x, k
 
-x,k = newton(f,np.array([5,5]),grad,hess,alpha=1e0,eps = 1e-6,plot=True)
+x,k = bfgs(f,np.array([5,5]),grad,eps = 1e-6,search=True,plot=True)
 print(x)
 print(k)
