@@ -189,7 +189,8 @@ def bfgs(f,x0,grad,eps = 1e-5,alpha = 0.1, itmax = 10000, fd = False,h = 1e-7,pl
         #SALVAGUARDA DE DIVISAO POR 0
         if(np.dot(s,y) == 0):
             H = np.identity(np.size(x))
-        H = H + (np.outer(s,s)*(np.dot(s,y)+np.dot(y,np.matmul(H,y))))/np.dot(s,y)**2 - (np.matmul(H,np.outer(y,s)) + np.matmul(np.outer(s,y),H))/np.dot(s,y)
+        else:
+            H = H + (np.outer(s,s)*(np.dot(s,y)+np.dot(y,np.matmul(H,y))))/np.dot(s,y)**2 - (np.matmul(H,np.outer(y,s)) + np.matmul(np.outer(s,y),H))/np.dot(s,y)
 
     if(plot): 
         yMin = np.min(orde)
