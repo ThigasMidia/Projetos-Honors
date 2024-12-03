@@ -68,10 +68,22 @@ def linesearch(f,x,g,d):
 #---------------------------------------------------------------------------------------------
 
 def f1(x):
-    return x[0]**2*x[1]**2-x[0]*x[1]**2+x[1]**2+x[0]**2-4*x[0]*x[1]+1
+    return x[0]**2*(x[1]**2)-x[0]*(x[1]**2)+(x[1]**2)+(x[0]**2)-4*x[0]*x[1]+1
 
 def grad1(x):
-    return np.array([2*x[0]*x[1]**2-x[1]**2+2*x[0]-4*x[1],2*x[0]**2*x[1]-2*x[0]*x[1]+2*x[1]-4*x[0]])
+    return np.array([2*x[0]*(x[1]**2)-(x[1]**2)+2*x[0]-4*x[1],2*(x[0]**2)*x[1]-2*x[0]*x[1]+2*x[1]-4*x[0]])
+
+def hess1(x):
+    return np.array([[2*(x[1]**2)+2,4*x[0]*x[1]-4-2*x[1]],[4*x[0]*x[1]-4-2*x[1],2*(x[0]**2)+2-2*x[0]]])
+
+def f2(x):
+    return x[0]**4+x[1]**4-4*x[0]*x[1]+1
+
+def grad2(x):
+    return np.array([4*x[0]**3-4*x[1],4*x[1]**3-4*x[0]]) 
+
+def hess2(x):
+    return np.array([[12*x[0]**2,-4],[-4,12*x[1]**2]])
 
 #--------------------------------------------------------------------------------------------
 #
@@ -91,6 +103,8 @@ def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot =
 
     if(fd):
         grd = fin_diff(f,x,1,h)
+        print(np.linalg.norm(grd))
+        print(eps)
         while (np.linalg.norm(grd) > eps) and (k < itmax):
             k += 1
             if(search):
@@ -151,7 +165,7 @@ def newton(f,x0,grad,hess,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e
         except:
             H = H*0.9 + np.identity(np.size(x)) * 0.1
 
-        while(np.dot(d,g) > -1e-3*np.linalg.norm(g)*np.linalg.norm(d)):
+        while(np.dot(d,g) > -0.001*np.linalg.norm(g)*np.linalg.norm(d)):
             H = H*0.9 + np.identity(np.size(x))*0.1
             #RESOLVE
             d = np.linalg.solve(H,-g)
@@ -224,5 +238,6 @@ def bfgs(f,x0,grad,eps = 1e-5,alpha = 0.1, itmax = 10000, fd = False,h = 1e-7,pl
 
     return x, k
 
+x, k = gd(f2,np.array([4,4]),grad2,plot=True,search=True)
 print(x)
 print(k)
