@@ -61,18 +61,27 @@ def linesearch(f,x,g,d):
 #
 #
 #
-#SEPARACAO ENTRE AS FUNCOES EXTRAS E AS FUNCOES PRINCIPAIS (GRADIENTE, NEWTON E BFGS)
+#SEPARACAO ENTRE AS FUNCOES EXTRAS E AS 3 FUNCOES IMPLEMENTADAS
 #
 #
 #
 #---------------------------------------------------------------------------------------------
 
+def f1(x):
+    return x[0]**2*x[1]**2-x[0]*x[1]**2+x[1]**2+x[0]**2-4*x[0]*x[1]+1
 
-def f(x):
-    sum = 0
-    for i in range(len(x)-1):
-        sum += 100*(x[i+1]-x[i]**2)**2+(1-x[i])**2
-    return sum
+def grad1(x):
+    return np.array([2*x[0]*x[1]**2-x[1]**2+2*x[0]-4*x[1],2*x[0]**2*x[1]-2*x[0]*x[1]+2*x[1]-4*x[0]])
+
+#--------------------------------------------------------------------------------------------
+#
+#
+#
+#SEPARACAO ENTRE AS 3 FUNCOES E O GRADIENTE, NEWTON E BFGS
+#
+#
+#
+#---------------------------------------------------------------------------------------------
 
 def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot = False,search = False):
     x = x0
