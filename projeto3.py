@@ -53,23 +53,26 @@ def fin_diff(f,x,degree,h):
 
 def linesearch(f,x,g,d):
     alpha = 1
-    while(f(x+alpha*d) > f(x) + 0.001*alpha*np.dot(g,d)):
+    while(f(x+alpha*d) > f(x) + np.dot(g,d)*alpha*0.001):
         alpha = alpha*0.5
-
     return alpha
 
+#---------------------------------------------------------------------------------------------
+#
+#
+#
+#SEPARACAO ENTRE AS FUNCOES EXTRAS E AS FUNCOES PRINCIPAIS (GRADIENTE, NEWTON E BFGS)
+#
+#
+#
+#---------------------------------------------------------------------------------------------
+
+
 def f(x):
-    return x[0]**4-2*x[0]**2+x[0]-x[0]*x[1]+x[1]**2
-
-def grad(x):
-    return np.array([4*x[0]**3-4*x[0]+1-x[1],-x[0]+2*x[1]])
-
-def negGrad(x):
-    return np.array([-4*x[0]**3+4*x[0]-1+x[1],x[0]-2*x[1]])
-
-def hess(x):
-    return np.array([[12*x[0]**2-4,-1],[-1,2]])
-
+    sum = 0
+    for i in range(len(x)-1):
+        sum += 100*(x[i+1]-x[i]**2)**2+(1-x[i])**2
+    return sum
 
 def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot = False,search = False):
     x = x0
@@ -77,24 +80,27 @@ def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot =
     orde = np.array([x[1]])
     k = 0
 
-
-    if(fd): 
-        while (np.linalg.norm(fin_diff(f,x,1,h)) > eps) and (k < itmax):
+    if(fd):
+        grd = fin_diff(f,x,1,h)
+        while (np.linalg.norm(grd) > eps) and (k < itmax):
             k += 1
             if(search):
-                alpha = linesearch(f,x,grad,negGrad)
-            x = x - (alpha * fin_diff(f,x,1,h))
+                alpha = linesearch(f,x,grd,-grd)
+            x = x - (alpha * grd)
             abci = np.append(abci,[x[0]],axis=0)
             orde = np.append(orde,[x[1]],axis=0)
+            grd = fin_diff(f,x,1,h)
 
     else:
-        while (np.linalg.norm(grad(x)) > eps) and (k < itmax):
+        grd = grad(x)
+        while (np.linalg.norm(grd) > eps) and (k < itmax):
             k += 1
             if(search):
-                alpha = linesearch(f,x,grad(x),negGrad(x))
-            x = x - (alpha * grad(x))
+                alpha = linesearch(f,x,grd,-grd)
+            x = x - (alpha * grd)
             abci = np.append(abci,[x[0]],axis=0)
             orde = np.append(orde,[x[1]],axis=0)
+            grd = grad(x)
 
 
     if(plot):
@@ -129,11 +135,13 @@ def newton(f,x0,grad,hess,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e
             H = fin_diff(f,x,2,h)
         else:
             H = hess(x)
-        if(np.linalg.det(H) == 0):
-            H = H*0.9 + np.identity(np.size(H,0))*0.1
+    
+        try:
+            d = np.linalg.solve(H, -g)
 
-        #RESOLVE
-        d = np.linalg.solve(H, -g)
+        except:
+            H = H*0.9 + np.identity(np.size(x)) * 0.1
+
         while(np.dot(d,g) > -1e-3*np.linalg.norm(g)*np.linalg.norm(d)):
             H = H*0.9 + np.identity(np.size(x))*0.1
             #RESOLVE
@@ -207,6 +215,5 @@ def bfgs(f,x0,grad,eps = 1e-5,alpha = 0.1, itmax = 10000, fd = False,h = 1e-7,pl
 
     return x, k
 
-x,k = bfgs(f,np.array([5,5]),grad,eps = 1e-6,search=True,plot=True)
 print(x)
 print(k)
