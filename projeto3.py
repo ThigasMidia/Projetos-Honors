@@ -85,6 +85,15 @@ def grad2(x):
 def hess2(x):
     return np.array([[12*x[0]**2,-4],[-4,12*x[1]**2]])
 
+def f3(x):
+    return x[0]**2+x[1]**2-x[0]*x[1]+3*x[0]-x[1]+2
+
+def grad3(x):
+    return np.array([2*x[0]-x[1]+3,2*x[1]-x[0]-1])
+
+def hess3(x):
+    return np.array([[2,-1],[-1,2]])
+
 #--------------------------------------------------------------------------------------------
 #
 #
@@ -103,8 +112,6 @@ def gd(f,x0,grad,eps = 1e-5,alpha = 0.1,itmax = 10000,fd = False,h = 1e-7,plot =
 
     if(fd):
         grd = fin_diff(f,x,1,h)
-        print(np.linalg.norm(grd))
-        print(eps)
         while (np.linalg.norm(grd) > eps) and (k < itmax):
             k += 1
             if(search):
@@ -238,6 +245,4 @@ def bfgs(f,x0,grad,eps = 1e-5,alpha = 0.1, itmax = 10000, fd = False,h = 1e-7,pl
 
     return x, k
 
-x, k = gd(f2,np.array([4,4]),grad2,plot=True,search=True)
-print(x)
-print(k)
+
